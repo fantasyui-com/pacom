@@ -1,6 +1,6 @@
 {
   "name": "pacom",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "Graphic user interface (GUI) for ballistic missile alerts (BM) and other things (AOT).",
   "main": "main.js",
   "scripts": {
