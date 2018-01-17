@@ -1,0 +1,23 @@
+{
+  "name": "pacom",
+  "version": "1.0.0",
+  "description": "Graphic user interface (GUI) for ballistic missile alerts (BM) and other things (AOT).",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/fantasyui-com/pacom.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/fantasyui-com/pacom/issues"
+  },
+  "homepage": "https://github.com/fantasyui-com/pacom#readme",
+  "dependencies": {
+    "node-notifier": "^5.2.1"
+  }
+}
