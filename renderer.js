@@ -2,103 +2,180 @@
 // be executed in the renderer process for that window.
 // All of the Node.js APIs are available in this process.
 
+const kebabCase = require('lodash/kebabCase');
+
+const fs = require('fs');
+const path = require('path');
+
+const chokidar = require('chokidar');
+
+var XRegExp = require('xregexp');
+
+
 const NotificationCenter = require('node-notifier').NotificationCenter;
 var notifier = new NotificationCenter({
   withFallback: true, // Use Growl Fallback if <= 10.8
 });
 
+////////////////////////////////////////////////////////////////////////////////
 
 const EventEmitter = require('events');
 class MyEmitter extends EventEmitter {}
 const myEmitter = new MyEmitter();
 
+////////////////////////////////////////////////////////////////////////////////
 
+const sessionObject = {
 
-var objects = {
+  id: 'session',
+  cursor: 'home',
 
-  screens: {
-    id: 'screens',
-    visibleScreen: 'main',
-    orderProgress: 0,
-    screenResultMessage: 'Success. You have been reassigned to other duties.'
-  }
+  title: 'Home',
+  text: '',
+  code: '',
 
 };
 
+const stateObject = {
 
-myEmitter.on('screens.visibleScreen', ({ objectId, propertyName, oldValue, newValue }) => {
-  console.log('an event occurred!', objectId, propertyName, oldValue, newValue);
+  id: 'state',
 
-  //if( property.match(/Visibility$/) ) object.properties.forEach( property => object[property] = !value );
-  $(`*.screen`).addClass('d-none');
-  $(`*.screen.${newValue}`).removeClass('d-none');
+};
 
-});
+////////////////////////////////////////////////////////////////////////////////
 
-myEmitter.on('screens.orderProgress', ({ objectId, propertyName, oldValue, newValue }) => {
-  console.log('an event occurred!', objectId, propertyName, oldValue, newValue);
-
-  //if( property.match(/Visibility$/) ) object.properties.forEach( property => object[property] = !value );
-  $(`.progress-bar`).css('width', `${newValue}%`).attr('aria-valuenow', newValue).text(`${newValue}%`);
-
-});
-
-
-
-var observer = {
-
+var standardObserver = {
   get: function(object, propertyName) {
     return object[propertyName];
   },
   set: function(object, propertyName, newValue) {
     const objectId = object.id
     const oldValue = object[propertyName];
-    myEmitter.emit([objectId, propertyName].join('.'), { objectId, propertyName, oldValue, newValue, });
     object[propertyName] = newValue;
+    myEmitter.emit([objectId, propertyName].join('.'), { objectId, propertyName, oldValue, newValue, });
   },
 };
 
+////////////////////////////////////////////////////////////////////////////////
+
+/*
+  assigning data to session/state will result in UI updates
+  data must be assigned via writing to files.
+*/
+
+var system = {
+  session: new Proxy(sessionObject, standardObserver),
+  state: new Proxy(stateObject  , standardObserver),
+};
+
+////////////////////////////////////////////////////////////////////////////////
 
 
-var p = new Proxy(objects.screens, observer);
-
-
-$(function() {
-  p.visibleScreen = 'home';
-
-  $('.display').on('click', function() {
-    p.visibleScreen = $(this).data('name');
-  });
-
-  const title = "EMERGENCY ALERTS";
-  const subtitle = "EMERGENCY ALERT";
-  const message = "BALLISTIC MISSILE THREAT INBOUND TO HAWAII. SEEK IMMEDIATE SHELTER. THIS IS NOT A DRILL.";
-
-  $('.order').on('click', function() {
-    p.visibleScreen = 'execution';
-
-    setTimeout(() => {
-      notifier.notify({
-        subtitle,
-        title,
-        message,
-      });
-
-    }, 1000);
-
-    p.orderProgress = 0;
-    let intervalId = setInterval(()=>{
-      p.orderProgress++;
-      if(p.orderProgress>99) {
-        clearInterval(intervalId);
-        setTimeout(() => {
-          p.orderProgress = 0;
-          p.visibleScreen = 'home';
-        }, 1000);
-
-      }
-
-    },100);
-
-  });
+myEmitter.on('session.title', ({ objectId, propertyName, oldValue, newValue }) => {
+  $(`title`).text(newValue);
 });
+
+myEmitter.on('session.cursor', ({ objectId, propertyName, oldValue, newValue }) => {
+  processDataFile(`./db/${newValue}.md`)
+});
+
+myEmitter.on('session.text', ({ objectId, propertyName, oldValue, newValue }) => {
+  let html = newValue.split(/\n/g).map(i=>`<div>${i}</div>`).join("");
+  $(`.body`).html(html);
+
+  $('.body .action').on('click', function() {
+    system.session.cursor = $(this).data('event');
+  });
+
+});
+
+myEmitter.on('session.code', ({ objectId, propertyName, oldValue, newValue }) => {
+   $(`.code`).val(newValue);
+   $(`.save-code`).off().on('click', function(){
+     fs.writeFileSync( `./db/${system.session.cursor}.md`, $(`.code`).val() );
+   });
+});
+
+////////////////////////////////////////////////////////////////////////////////
+
+var watcher = chokidar.watch('db', {
+  ignored: /(^|[\/\\])\../,
+  persistent: true
+});
+
+// Something to use when events are received.
+function validLink(target){
+  console.log(target);
+  const extname = path.extname(target);
+  const basename = path.basename(target, extname);
+  return !!fs.existsSync(`./db/${basename}.md`);
+}
+
+function processDataFile(target){
+
+  const extname = path.extname(target);
+
+  if(extname !== '.md') return;
+
+  const basename = path.basename(target, extname);
+
+  if(basename != system.session.cursor) return;
+
+  if(!fs.existsSync(`./db/${basename}.md`)){
+    fs.writeFileSync(`./db/${basename}.md`,['Clear Screen', 'Create action link: Home'].join("\n\n") );
+    fs.writeFileSync(`./db/${basename}.js`,`module.exports = function({statements}){ require(__dirname+'/home.js')({statements}) }`)
+  }
+
+  const processor = require(`./db/${basename}.js`);
+  const story = fs.readFileSync(target).toString();
+
+
+  system.session.code = story;
+
+  const statements = [];
+
+  processor({statements});
+
+  story.split(/\n/).forEach((line)=>{
+    statements.forEach(function(statement){
+      const match = XRegExp.exec(line, XRegExp(statement.pattern) );
+      if(match) {
+        const directive = Object.assign({},statement.base,match)
+
+        if(directive.append){
+          if(directive.type === 'html/href' ){
+            system[directive.objectId][directive.propertyName] += `<a class="action d-block" href="#" data-event="${kebabCase(directive.newValue)}"><u>${directive.newValue}</u></a>`;
+          } else if(directive.type === 'text/plain'){
+            system[directive.objectId][directive.propertyName] += directive.newValue;
+          }else{
+            system[directive.objectId][directive.propertyName] += `<div>${directive.newValue}</div>`;
+          }
+
+        }else{
+
+          if(directive.type === 'html/href' ){
+            system[directive.objectId][directive.propertyName] = `<a class="action d-block" href="#" data-event="${kebabCase(directive.newValue)}"><u>${directive.newValue}</u></a>`;
+          } else if(directive.type === 'text/plain'){
+            system[directive.objectId][directive.propertyName] = directive.newValue;
+          }else{
+            system[directive.objectId][directive.propertyName] = `<div>${directive.newValue}</div>`;
+          }
+
+        }
+      }
+    })
+  });
+
+}
+
+// Will be called initially to add files from db
+watcher.on('add', function(path){
+  processDataFile(path)
+});
+
+// will be called on changes
+watcher.on('change', function(path){
+  processDataFile(path)
+});
+
+////////////////////////////////////////////////////////////////////////////////

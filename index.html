@@ -10,61 +10,38 @@
   <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.3/js/bootstrap.min.js" integrity="sha384-a5N7Y/aK3qNeh15eJKGWxsqtnX/wWdSZSKp+81YjTmS15nvnvxKHuzaWwXHDli+4" crossorigin="anonymous"></script>
+  <script defer src="https://use.fontawesome.com/releases/v5.0.4/js/all.js"></script>
 
   <body>
 
-    <div class="container screen home p-3">
-
-      <div class="row">
-        <div class="col">
-          <div class="float-right"><u><a class="display" data-name="help" href="#">Help</a></u></div>
-        </div>
-      </div>
-
+    <div class="container">
       <div class="row p-3">
         <div class="col p-3">
-
-
-          <p><u><a class="order" href="#">BMD False Alarm</a></u></p>
-          <p><u><a class="order" href="#">Amber Alert (CAE) - Kauai County Only</a></u></p>
-          <p><u><a class="order" href="#">Amber Alert (CAE) Statewide</a></u></p>
-          <p><u><a class="order" href="#">1. TEST Message</a></u></p>
-          <p><u><a class="order" href="#">PACOM (CDW) - STATE ONLY</a></u></p>
-          <p><u><a class="order" href="#">Tsunami Warning (CEM) - STATE ONLY</a></u></p>
-          <p><u><a class="order" href="#">DRILL - PACOM (CDW) - STATE ONLY</a></u></p>
-          <p><u><a class="order" href="#">Landslide - Hana Road Closure</a></u></p>
-          <p><u><a class="order" href="#">Amber Alert DEMO TEST</a></u></p>
-          <p><u><a class="order" href="#">High Surf Warning North Shores</a></u></p>
-
+          <div class="body"></div>
+          <a class="btn btn-link text-info float-right" data-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample"><i class="fas fa-code"></i></a>
         </div>
       </div>
     </div>
 
-    <div class="container screen execution p-3">
+    <hr>
+
+    <div class="container p-3">
       <div class="row p-3">
         <div class="col p-3">
-          <h1>Sending...</h1>
-
-          <div class="progress">
-            <div class="execution progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100" style="width: 75%;"></div>
+          <div class="collapse" id="collapseExample">
+            <form>
+              <div class="form-group">
+                <textarea class="code form-control" id="exampleFormControlTextarea1" rows="10"></textarea>
+                </p>
+                  <button class="btn secondary" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample"><i class="fas fa-eye-slash"></i></button>
+                  <button class="btn btn-primary save-code" type="button"><i class="fas fa-save"></i></button>
+                </p>
+              </div>
+            </form>
           </div>
-
         </div>
       </div>
     </div>
-
-    <div class="container screen help p-3">
-      <div class="row p-3">
-        <div class="col p-3">
-
-          <h1>Nope.</h1>
-          <p><u><a class="display" data-name="home" href="#">Home</a></u></p>
-
-        </div>
-      </div>
-    </div>
-
-
 
     <script>
       // You can also require other files to run in this process

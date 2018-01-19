@@ -1,7 +1,7 @@
 {
   "name": "pacom",
   "version": "1.4.0",
-  "description": "Graphic user interface (GUI) for ballistic missile alerts (BM) and other things (AOT).",
+  "description": "Powerful minimalist graphic user interface framework for cross platform UI and ICBMS.",
   "main": "main.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -18,6 +18,9 @@
   },
   "homepage": "https://github.com/fantasyui-com/pacom#readme",
   "dependencies": {
-    "node-notifier": "^5.2.1"
+    "chokidar": "^2.0.0",
+    "lodash": "^4.17.4",
+    "node-notifier": "^5.2.1",
+    "xregexp": "^4.0.0"
   }
 }
