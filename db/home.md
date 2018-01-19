@@ -3,7 +3,7 @@ Clear Screen
 Set title to "Home Page".
 
 Create action link: Home
-
+Create action link: Help
 Create action link: About
 
 Horizontal Rule

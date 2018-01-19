@@ -11,13 +11,24 @@ module.exports = function({statements}){
 
   statements.push({
     base:{
-      append: true,
+      operation: 'append',
       objectId:'session',
       propertyName:'text',
       type: 'text/plain',
       newValue: '<hr>',
     },
     pattern: 'Horizontal Rule'
+  });
+
+  statements.push({
+    base:{
+      operation: 'append',
+      objectId:'session',
+      propertyName:'text',
+      type: 'text/md',
+      newValue: require('fs').readFileSync('./README.md').toString(),
+    },
+    pattern: 'Include README.md'
   });
 
   statements.push({
@@ -31,7 +42,7 @@ module.exports = function({statements}){
 
   statements.push({
     base:{
-      append: true,
+      operation: 'append',
       type: 'html/href',
       objectId:'session',
       propertyName:'text'
@@ -41,7 +52,7 @@ module.exports = function({statements}){
 
   statements.push({
     base:{
-      append: true,
+      operation: 'append',
       type: 'text/plain',
       objectId:'session',
       propertyName:'text'

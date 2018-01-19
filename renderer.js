@@ -9,6 +9,8 @@ const path = require('path');
 
 const chokidar = require('chokidar');
 
+const markdown = require( "markdown" ).markdown;
+
 var XRegExp = require('xregexp');
 
 
@@ -137,33 +139,42 @@ function processDataFile(target){
   processor({statements});
 
   story.split(/\n/).forEach((line)=>{
+
+    let matchedAtleastOnce = false;
+
     statements.forEach(function(statement){
       const match = XRegExp.exec(line, XRegExp(statement.pattern) );
       if(match) {
-        const directive = Object.assign({},statement.base,match)
+        matchedAtleastOnce = true;
+        const directive = Object.assign({operation: 'apply'}, statement.base, match)
 
-        if(directive.append){
-          if(directive.type === 'html/href' ){
-            system[directive.objectId][directive.propertyName] += `<a class="action d-block" href="#" data-event="${kebabCase(directive.newValue)}"><u>${directive.newValue}</u></a>`;
-          } else if(directive.type === 'text/plain'){
-            system[directive.objectId][directive.propertyName] += directive.newValue;
-          }else{
-            system[directive.objectId][directive.propertyName] += `<div>${directive.newValue}</div>`;
-          }
+        // Defauts
+        let val = `<p>${directive.newValue}</p>`;
 
-        }else{
-
-          if(directive.type === 'html/href' ){
-            system[directive.objectId][directive.propertyName] = `<a class="action d-block" href="#" data-event="${kebabCase(directive.newValue)}"><u>${directive.newValue}</u></a>`;
-          } else if(directive.type === 'text/plain'){
-            system[directive.objectId][directive.propertyName] = directive.newValue;
-          }else{
-            system[directive.objectId][directive.propertyName] = `<div>${directive.newValue}</div>`;
-          }
-
+        // Overloads
+        if(directive.type === 'html/href' ){
+          val = `<a class="action d-block" href="#" data-event="${kebabCase(directive.newValue)}"><u>${directive.newValue}</u></a>`;
+        } else if(directive.type === 'text/md'){
+          val = markdown.toHTML( directive.newValue );
+          val = val.replace(/<img alt/g,'<img class="mw-100" alt')
+        } else if(directive.type === 'text/plain'){
+          val = directive.newValue;
         }
+
+        // Assignment
+        if(directive.operation == 'append') {
+          system[directive.objectId][directive.propertyName] += val;
+        }else{
+          system[directive.objectId][directive.propertyName] = val
+        }
+
       }
-    })
+    });
+
+    if(!matchedAtleastOnce && line.trim().length){
+      system.session.text += `<p>${line}</p>`;
+    }
+
   });
 
 }
