@@ -29,3 +29,5 @@ Create action link: Amber Alert DEMO TEST
 Create action link: High Surf Warning North Shores
 
 Print text: End of line.
+
+Horizontal Rule

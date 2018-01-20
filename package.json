@@ -1,7 +1,7 @@
 {
   "name": "pacom",
   "version": "1.6.0",
-  "description": "Powerful minimalist graphic user interface framework for cross platform UI and ICBMS.",
+  "description": "Minimalist WikiWiki with an english-like programming language.",
   "main": "main.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
