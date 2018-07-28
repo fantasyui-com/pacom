@@ -18,8 +18,8 @@
   },
   "homepage": "https://github.com/fantasyui-com/pacom#readme",
   "dependencies": {
-    "chokidar": "^2.0.0",
-    "lodash": "^4.17.4",
+    "chokidar": "^2.0.4",
+    "lodash": "^4.17.10",
     "markdown": "^0.5.0",
     "node-notifier": "^5.2.1",
     "xregexp": "^4.0.0"
