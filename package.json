@@ -4,21 +4,22 @@
   "description": "Minimalist WikiWiki with an english-like programming language.",
   "main": "main.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "save": "git add .; git commit -m 'New Release'; git push; npm version patch; npm publish; git push;"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/fantasyui-com/pacom.git"
   },
   "keywords": [],
-  "author": "",
+  "author": "fantasyui.com <fantasyui.com@gmail.com>",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/fantasyui-com/pacom/issues"
   },
   "homepage": "https://github.com/fantasyui-com/pacom#readme",
   "dependencies": {
-    "chokidar": "^2.1.8",
+    "chokidar": "^3.5.2",
     "lodash": "^4.17.15",
     "markdown": "^0.5.0",
     "node-notifier": "^5.4.3",
