@@ -22,7 +22,7 @@
     "chokidar": "^3.5.2",
     "lodash": "^4.17.15",
     "markdown": "^0.5.0",
-    "node-notifier": "^5.4.3",
+    "node-notifier": "^10.0.0",
     "xregexp": "^4.0.0"
   }
 }
