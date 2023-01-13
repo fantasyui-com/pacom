@@ -1,6 +1,6 @@
 {
   "name": "pacom",
-  "version": "1.30.0",
+  "version": "1.31.0",
   "description": "Minimalist WikiWiki with an english-like programming language.",
   "main": "main.js",
   "scripts": {
